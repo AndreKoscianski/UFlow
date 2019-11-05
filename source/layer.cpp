@@ -960,22 +960,21 @@ void Layer::distance_transform (double stddev) {
 }
 
 
-
+/*
 
 
 #include "kdtreei.h"
 
-/*
 
- Example test:
 
-   Gaux.copy (&Groads);
-   Gaux.distance_transform2 (10.);
-   Gaux.Subtract (&Groads);
-   Gaux.double2tone (255,255,255);
-   Gaux.save ("DistanceTransform-kd.png");
-exit(0);
-*/
+// Example test:
+//
+//   Gaux.copy (&Groads);
+//   Gaux.distance_transform2 (10.);
+//   Gaux.Subtract (&Groads);
+//   Gaux.double2tone (255,255,255);
+//   Gaux.save ("DistanceTransform-kd.png");
+
 
 
 void Layer::distance_transform2 (double stddev) {
@@ -1038,3 +1037,4 @@ void Layer::distance_transform2 (double stddev) {
    normalize ();
 }
 
+*/
