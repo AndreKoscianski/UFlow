@@ -337,7 +337,7 @@ int main (int argc, char **argv) {
 
    if (!GPiMap.load (str.c_str())) {
 
-      std::cout << "\nPre-processing step: computing Hot Map.\nPlease wait.\n";
+      std::cout << "\nPre-processing step: computing Pi Map.\nPlease wait.\n";
 
       GPiMap.copy         (&Groads);
       GPiMap.image2double ();    // no parameter (enlarge)
