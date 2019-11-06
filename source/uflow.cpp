@@ -512,10 +512,6 @@ int main (int argc, char **argv) {
 //      GK.clamp (0, 1);
       GK.clamp_min (0);
 
-GK.double2tone(255,255,255);
-GK.save("credo.png");
-Gdelta2.double2tone(255,255,255);
-Gdelta2.save("credo2.png");
 
       metricMatthews  = GR.metricMatthews (Gim2, tp, tn, fp, fn);
       //--------------------------------------------------
