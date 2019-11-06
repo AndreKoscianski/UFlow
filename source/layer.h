@@ -51,7 +51,9 @@ class Layer {
 
       void    invertBW     ();
 
+      void    BWthreshold  (double);
       void    clamp        (double, double);
+      void    clamp_min    (double);
       void    Subtract     (Layer *);
       void    subtract     (Layer *);
       void    add          (Layer *);

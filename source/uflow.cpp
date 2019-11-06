@@ -339,8 +339,6 @@ int main (int argc, char **argv) {
 
       std::cout << "\nPre-processing step: computing Pi Map.\nPlease wait.\n";
 
-      GPiMap.copy         (&Groads);
-      GPiMap.image2double ();    // no parameter (enlarge)
 
       GPiMap.copy         (&Gim2);
       GPiMap.image2double (URBANTHRESHOLD);    // no parameter (enlarge)
@@ -410,7 +408,7 @@ int main (int argc, char **argv) {
 */
 
 
-   // If user decide to load a previously computed K-Map,
+   // If user decides to load a previously computed K-Map,
    //   try to find it, otherwise, perform the calibration.
    bool flagjump = false;
 
@@ -462,13 +460,15 @@ int main (int argc, char **argv) {
 
    maxheatcycles = (int) config_getd ("MaxHeatCycles");
 
-   Gaux.copy (&Gim1);
+   Gaux.copy     (&Gim1);
    Gaux.multiply (URBANTEMPERATURE);
 
 
    //================================================
    //  CALIBRATION LOOP
    n2 = (int) config_getd ("MaxCalibrationLoops");
+
+   int max_pixels = Gim2.countGreater (URBANTHRESHOLD);
 
    for (nCalibLoops = k = 1; nCalibLoops < (1 + n2); nCalibLoops++) {
 
@@ -477,9 +477,8 @@ int main (int argc, char **argv) {
                            , GK
                            , GR
                            , maxheatcycles
-                           , Gim2.countGreater (URBANTHRESHOLD)
+                           , max_pixels
                            , dif);
-
 
       //Gdelta1 = pixels that should have been urbanized.
       Gdelta1.copy      (&Gim2);
@@ -487,8 +486,10 @@ int main (int argc, char **argv) {
 
       //Gdelta2 = pixels that should NOT have been urbanized.
       Gdelta2.copy      (&GR    );
-      Gdelta2.clamp     (0.5,1.0);
+//      Gdelta2.BWthreshold (URBANTHRESHOLD);
+      Gdelta2.clamp_min (URBANTHRESHOLD);
       Gdelta2.subtract  (&Gim2  );
+
 
       //Count pixels that lacked urbanization (less)
       //  or that exceeded (plus).
@@ -502,13 +503,19 @@ int main (int argc, char **argv) {
       Enlarge2 (Gdelta2.data, Gdelta2.width, Gdelta2.height, 5*nCalibLoops);
 
 
-
       // Next, make data negative.
+//      Gdelta2.BWthreshold (URBANTHRESHOLD);
       Gdelta2.multiply (-Ggamma);
 
       // Finally, add data to K Map.
       GK.add (&Gdelta2);
-      GK.clamp (0, 1);
+//      GK.clamp (0, 1);
+      GK.clamp_min (0);
+
+GK.double2tone(255,255,255);
+GK.save("credo.png");
+Gdelta2.double2tone(255,255,255);
+Gdelta2.save("credo2.png");
 
       metricMatthews  = GR.metricMatthews (Gim2, tp, tn, fp, fn);
       //--------------------------------------------------
@@ -636,6 +643,8 @@ int main (int argc, char **argv) {
     GR.double2tone (255,153,0);
 
     Gaux.copy_colored_pixels (&GR);
+
+testeak:
 
     // First, save K Map.
     GK.double2tone (255, 255, 255);
@@ -778,6 +787,7 @@ int main (int argc, char **argv) {
    Gim1.copy  (&GR);
    
    Gaux.copy (&GR);
+   Gaux.normalize ();
    Gaux.double2image ();
    Gaux.save (str_trick ("(color)", config_gets("forecastImg")));
 

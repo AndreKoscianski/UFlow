@@ -419,6 +419,22 @@ void Layer::double2image (double *source, double threashold) {
 };
 
 
+//---------------------------------------------------
+/*!
+   As the name says. Calculations using 'data' ()= double)
+     \return true if ok, abort program otherwise
+*/
+void Layer::BWthreshold (double threshold) {
+
+   if (NULL == data)    return;
+
+   int k = (image.size() / 4) - 1;
+
+   for (; k >= 0; k--)
+      data[k] = (data[k] >= threshold) ? 1.0 : 0.0;
+
+};
+
 
 //---------------------------------------------------
 /*!
@@ -439,6 +455,23 @@ void Layer::clamp (double min, double max) {
 };
 
 
+
+
+//---------------------------------------------------
+/*!
+   As the name says. Calculations using 'data' ()= double)
+     \return true if ok, abort program otherwise
+*/
+void Layer::clamp_min (double min) {
+
+   if (NULL == data)    return;
+
+   int k = (image.size() / 4) - 1;
+
+   for (; k >= 0; k--)
+      if (data[k] < min)
+            data[k] = 0;
+};
 
 
 //---------------------------------------------------
@@ -556,7 +589,7 @@ void Layer::multiply (double v) {
    for (; k >= 0; k--)
       data[k] *= v;
 
-   double2image (URBANTHRESHOLD);
+  // double2image (URBANTHRESHOLD);
 };
 
 
