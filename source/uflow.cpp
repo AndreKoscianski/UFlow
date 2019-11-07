@@ -1,5 +1,5 @@
 /*
-U-Flow version 1.0
+UFlow version 1.0
 
 Copyright (c) 2019-2099 André Koscianski
 
@@ -171,7 +171,7 @@ int main (int argc, char **argv) {
    if (!ValidateConfig (str2.c_str())) {
 
       cout << "\n--------------------------------------------------------------------\n"
-           << "U-FLOW requires a configuration file; \n"
+           << "UFLOW requires a configuration file; \n"
            << " an example has been written to disk (uflow.cfg).\n"
            << " Please check it out, adjust the parameters\n"
            << " and provide the necessary input files.\n"
