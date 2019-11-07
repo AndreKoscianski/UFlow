@@ -11,6 +11,11 @@
 #include <string>
 #include <algorithm>
 
+
+
+
+
+
 Layer::Layer () {width = height = 0; data = NULL;};
 
 //Layer::Layer (const Layer &l) { copy (&l);};
@@ -229,6 +234,11 @@ double *Layer::image2double () {
 
 
 
+//---------------------------------------------------
+/*!
+   Find limit values of data[].
+
+*/
 void Layer::find_range (double &min, double &max) {
 
    int k;
@@ -242,11 +252,14 @@ void Layer::find_range (double &min, double &max) {
    }
 }
 
+
+
+
 //---------------------------------------------------
 /*!
-   Converts from array 'data' to 'image'
+   Maps values of data[] to [0;1]
 */
-//double lmax,lmin;
+
 void Layer::normalize () {
 
    int k;
@@ -273,8 +286,12 @@ void Layer::normalize () {
 
 
 
+//---------------------------------------------------
+/*!
+   Given the value of a point, returns its color
+     in the 'jet' colormap of Matlab (or something similar to that)
+*/
 // https://stackoverflow.com/questions/7706339/grayscale-to-red-green-blue-matlab-jet-color-scale
-
 void GetColour(double v,double vmin,double vmax,
                double &r, double &g, double &b) {
 
@@ -421,8 +438,7 @@ void Layer::double2image (double *source, double threashold) {
 
 //---------------------------------------------------
 /*!
-   As the name says. Calculations using 'data' ()= double)
-     \return true if ok, abort program otherwise
+   Convert every point in data[] to 0/1  depending on parametrer
 */
 void Layer::BWthreshold (double threshold) {
 
@@ -438,8 +454,7 @@ void Layer::BWthreshold (double threshold) {
 
 //---------------------------------------------------
 /*!
-   As the name says. Calculations using 'data' ()= double)
-     \return true if ok, abort program otherwise
+   Lower and Upper limits
 */
 void Layer::clamp (double min, double max) {
 
@@ -459,8 +474,7 @@ void Layer::clamp (double min, double max) {
 
 //---------------------------------------------------
 /*!
-   As the name says. Calculations using 'data' ()= double)
-     \return true if ok, abort program otherwise
+   Any value < min becomes min.
 */
 void Layer::clamp_min (double min) {
 
@@ -498,8 +512,8 @@ void Layer::subtract (Layer *l) {
 
 //---------------------------------------------------
 /*!
-   As the name says. Calculations using 'data' ()= double)
-     \return true if ok, abort program otherwise
+   Another type of subtraction.
+
 */
 void Layer::Subtract (Layer *l) {
 
@@ -516,6 +530,8 @@ void Layer::Subtract (Layer *l) {
       if ((((l->data)[k]) > 0.5))
             data[k] = 0;
 };
+
+
 
 //---------------------------------------------------
 /*!
@@ -558,8 +574,8 @@ void Layer::multiply (Layer *l) {
 
 //---------------------------------------------------
 /*!
-   As the name says. Calculations using 'data' ()= double)
-     \return true if ok, abort program otherwise
+   Simply add layers.
+
 */
 void Layer::add (Layer *l) {
 
@@ -579,8 +595,8 @@ void Layer::add (Layer *l) {
 
 //---------------------------------------------------
 /*!
-   As the name says. Calculations using 'data' ()= double)
-     \return true if ok, abort program otherwise
+   Simply multiplies data[] by a constant.
+
 */
 void Layer::multiply (double v) {
 
@@ -595,6 +611,11 @@ void Layer::multiply (double v) {
 
 
 
+//---------------------------------------------------
+/*!
+   Count number of (disconnected) spots in binary image.
+
+*/
 std::vector<int> Layer::cluster_count () {
 
    int i, j, n, area, npaintedpixels;
@@ -706,6 +727,10 @@ void Layer::adjacencies (Layer *grow, Layer *origin) {
 };
 
 
+
+// not used !!!
+// not used !!!
+// not used !!!
 Layer& Layer::operator = (const Layer &other) {
 
     if (this != &other)
@@ -715,6 +740,14 @@ Layer& Layer::operator = (const Layer &other) {
 }
 
 
+
+
+
+//---------------------------------------------------
+/*!
+    sort of "matrix = constant"
+
+*/
 void Layer::set_every_pixel_to (double v) {
 
    for (int k = 0; k < width*height; k++)
@@ -727,6 +760,12 @@ void Layer::set_every_pixel_to (double v) {
 
 
 
+//---------------------------------------------------
+/*!
+    sort of inversion (observe the calculation,
+      have specific usage)
+
+*/
 void Layer::invertBW () {
 
    int k = 0;
@@ -928,6 +967,13 @@ double Layer::metricMatthews (const Layer &ref
 
 
 
+//---------------------------------------------------
+/*!
+   Brute force distance-transform.
+   There are better ways to compute this.
+
+
+*/
 void Layer::distance_transform (double stddev) {
 
    double *pdata = new double[width * height];

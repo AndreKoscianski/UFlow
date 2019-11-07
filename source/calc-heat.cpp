@@ -11,8 +11,7 @@
 //---------------------------------------------------
 /*!
    Counts pixels
-   \return number of pixels above threshold, <br>
-   -1 if no data available.
+   \return number of pixels above threshold, -1 if no data available.
 */
 int countGreater (double *d, int k, double threashold) {
 
@@ -47,8 +46,8 @@ void multiply (double *d, int k, double v) {
 
 //-----------------------------------------------------------------------------
 /*!
-  While Heat Equation is computed, hot zones cool down as they <br>
-    loose energy to neighbor cells. <br>
+  While Heat Equation is computed, hot zones cool down as they 
+    loose energy to neighbor cells. 
   This function 're-kindles' an image.
 */
 void HeatSources (double *plate, double *heatsources, int len) {
@@ -97,18 +96,10 @@ void OldStepHeat (int **x, int **xnew, int **k,
 }
 
 
-/**
- *****************************************************************************************
- *  @brief      Computes one step of heat equation. Explicit scheme.
- *
- *  @usage      This API can be called at any time
- *
- *  @param      m  heat field
- *  @param      nm new heat field
- *  @parm       k  thermal conductivity
- *  @param      nx,ny size
- ****************************************************************************************/
-
+//-----------------------------------------------------------------------------
+/*!
+  Computes one step of heat equation. Explicit scheme.
+*/
 void StepHeat (double *m, double *nm, double *k,
                int nx, int ny) {
 
@@ -214,7 +205,7 @@ void StepHeat2 (double *m, double *nm, double *k,
 
 //-----------------------------------------------------------------------------
 /*!
-  Computes several steps of the heat equation. Results in x and xnew
+  Computes several steps of the heat equation. Results in m and nm
   (with one deltaT of difference)
 */
 void CalcHeat (double *m, double *nm, double *k, double *s,
@@ -338,7 +329,7 @@ int LoopCalcHeat ( const Layer &im1
 
 //-----------------------------------------------------------------------------
 /*!
-  Enlarge spots in an image, using.. the heat equation!
+  Enlarge spots in an image, using the heat equation.
 
   \param m     image array
   \param nx,ny image size
@@ -388,6 +379,13 @@ void Enlarge (double *m, int nx, int ny, int nsteps) {
 
 
 
+//-----------------------------------------------------------------------------
+/*!
+  Enlarge spots in an image, using the heat equation.
+
+  Parallel version.
+
+*/
 void Enlarge2 (double *m, int nx, int ny, int nsteps) {
 
    if (NULL == m ) M_FullStop("Null m");
@@ -437,6 +435,11 @@ void Enlarge2 (double *m, int nx, int ny, int nsteps) {
 
 
 
+//-----------------------------------------------------------------------------
+/*!
+  Creates patches at random.
+
+*/
 void SprayUrban (Layer &imgR, const Layer &imgPossible, 
                  double temperature, unsigned int q, unsigned int area) {
 
@@ -486,6 +489,13 @@ void SprayUrban (Layer &imgR, const Layer &imgPossible,
 }
 
 
+//-----------------------------------------------------------------------------
+/*!
+  Creates patches at random.
+
+  A flawed initial attempt to speed things up.
+
+*/
 void SprayUrban_trial (Layer &imgR, const Layer &imgPossible, 
                  double temperature, unsigned int q, unsigned int area) {
 

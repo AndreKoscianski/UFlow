@@ -74,6 +74,8 @@ double
 //---------------------------------------------------
 /*!
    Validates configuration file.
+   Well, not every aspect, but at least
+     some errors are detected.
    If no file is available it creates one.
      \param filame  the file, evidently.
      \return true if file ok, false+new file, otherwise.
@@ -244,17 +246,28 @@ int main (int argc, char **argv) {
 
    } else {
 
+      // User did not define exclusioun map.
       // Create a map with right size,
-      //  then paint entirely with value = 1.0
+      //  then paint entirely with value = 1.0,
+      //  meaning that no pixel was excluded.
       Gexclude.copy (&Gim1);
       Gexclude.image2double();
       Gexclude.set_every_pixel_to (1.0);
    }
 
+
+   // Create initial kappa matrix
+   //   with right size and every value equal to 1.0
+
    GK.copy         (&Gim1);
    GK.image2double ();
    GK.set_every_pixel_to (1.0);
 
+
+
+   //-----------------------------------------------------------------------
+   //  Count number of islands (or spots) in im1 and im2.
+   //-----------------------------------------------------------------------
 
    GReport.Nurban_img1 = Gim1.countGreater (URBANTHRESHOLD);
    GReport.Nurban_img2 = Gim2.countGreater (URBANTHRESHOLD);
@@ -324,14 +337,11 @@ int main (int argc, char **argv) {
    nn = nx*ny;
 
 
-   //-----------------------
-   // Given two images, im1 and im2, 'before' and 'after',
-   //  compute the difference between them;
-   //  in the result (= growing regions), compute the edges
-   //  that touch im1.
-   //  These are the 'hotter spots' in im1 that
-   //  give rise to im2.
-   //-----------------------
+   //--------------------------------------------------------
+   // The probability map is computed from the union of im2 and roads.
+   //
+   // The image is inflated using the heat equation.
+   //-------------------------------------------------------
 
    str = config_gets ("PiMap");
 
@@ -408,6 +418,7 @@ int main (int argc, char **argv) {
 */
 
 
+   //-------------------------------------------------------
    // If user decides to load a previously computed K-Map,
    //   try to find it, otherwise, perform the calibration.
    bool flagjump = false;
@@ -574,7 +585,11 @@ int main (int argc, char **argv) {
 
 
 
+
+   //================================================
+
    // End Of Calibration.
+
    //================================================
 
    time_end = std::chrono::system_clock::now(); 
@@ -583,9 +598,13 @@ int main (int argc, char **argv) {
 
 
 
-
     metricMatthews  = metricMatthews2;
-   metricLeeSallee = metricLeeSallee2;
+    metricLeeSallee = metricLeeSallee2;
+
+
+
+    // Get best results found.
+
     GR.copy (&GRR);
     GK.copy (&GKK);
 
@@ -602,7 +621,6 @@ int main (int argc, char **argv) {
     GReport.metricMatthews  = metricMatthews;
 
     GReport.sim_pixels = GR.countGreater (URBANTHRESHOLD);
-
 
 
     GR.double2image (URBANTHRESHOLD);
@@ -640,9 +658,8 @@ int main (int argc, char **argv) {
 
     Gaux.copy_colored_pixels (&GR);
 
-testeak:
 
-    // First, save K Map.
+    // Save K Map.
     GK.double2tone (255, 255, 255);
 
     str = config_gets("SaveKMap");
@@ -715,11 +732,19 @@ testeak:
    if (str != "NULL")
       GK.save (str_trick ("(noisy)", str.c_str()));
 
+
+
+
    //----------------------------------------
 
-   // FORECAST LOOP  
+   // FORECAST LOOP  ahead.
 
    //----------------------------------------
+
+
+
+   // Prepare data.
+
 
    q  = GReport.deltaTime    = config_getd ("deltaTime");
    q2 = GReport.forecastTime = config_getd ("forecastTime");
@@ -755,6 +780,11 @@ testeak:
    Gaux.copy (&Gim2);
 
    Gaux.multiply (URBANTEMPERATURE);
+
+
+
+   // Here it is,
+   //  forecast calculation.
 
 
    GReport.forecast_loops =
