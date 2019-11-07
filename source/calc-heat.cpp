@@ -235,7 +235,7 @@ void CalcHeat (double *m, double *nm, double *k, double *s,
    int len = nx*ny;
 
 
-#define noparallel 1
+//#define noparallel 1
 #ifdef noparallel
    while (nsteps--) {
 
