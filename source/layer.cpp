@@ -505,7 +505,7 @@ void Layer::subtract (Layer *l) {
    int k = (image.size() / 4) - 1;
 
    for (; k >= 0; k--)
-      if ((data[k] > 0.5) && (((l->data)[k]) > 0.5))
+      if ((data[k] > URBANTHRESHOLD) && (((l->data)[k]) > URBANTHRESHOLD))
             data[k] = 0;
 };
 
@@ -527,7 +527,7 @@ void Layer::Subtract (Layer *l) {
    for (; k >= 0; k--)
 //      if (data[k] > 0.1) data[k] -= ((l->data)[k]);
 //            data[k] -= ((l->data)[k]);
-      if ((((l->data)[k]) > 0.5))
+      if ((((l->data)[k]) > URBANTHRESHOLD))
             data[k] = 0;
 };
 
@@ -548,7 +548,7 @@ void Layer::set_union (Layer *l) {
    int k = (image.size() / 4) - 1;
 
    for (; k >= 0; k--)
-      if (((l->data)[k]) > 0.5)
+      if (((l->data)[k]) > URBANTHRESHOLD)
          data[k] = ((l->data)[k]);
 };
 
@@ -828,7 +828,9 @@ void Layer::floodFill (double *dd, int x, int y, double antes, double depois,
 
 //---------------------------------------------------
 /*!
-   Simple linear regression
+   Simple linear regression.
+   This routine is NOT being used.
+
      \param a,b (references) to Ax+B coefficients.
 */
 void  Layer::linear_regression (double &a, double &b) {
@@ -839,7 +841,7 @@ void  Layer::linear_regression (double &a, double &b) {
 
    for (ix = 0; ix < width; ix++)
       for (iy = 0; iy < height; iy++) {
-         if (M_data(ix,iy) > 0.5) {
+         if (M_data(ix,iy) > URBANTHRESHOLD) {
             x.push_back((double) ix);
             y.push_back((double) iy);
          }
@@ -938,19 +940,12 @@ double Layer::metricMatthews (const Layer &ref
    int k = (image.size() / 4) - 1;
 
    tp = tn = fp = fn = 0;
-/*
-   for (; k >= 0; k--)
-      if (ref.data[k] > 0.5) {
-         if (data[k] > 0.5) ++tp; else ++fn;
-      } else
-         if (data[k] > 0.5) ++fp; else ++tn;
-*/
 
    for (; k >= 0; k--)
-      if (data[k] > 0.5) {
-         if (ref.data[k] > 0.5) ++tp; else ++fp;
+      if (data[k] > URBANTHRESHOLD) {
+         if (ref.data[k] > URBANTHRESHOLD) ++tp; else ++fp;
       } else
-         if (ref.data[k] > 0.5) ++fn; else ++tn;
+         if (ref.data[k] > URBANTHRESHOLD) ++fn; else ++tn;
 
 
    return (((double)tp*tn)-(fp*fn)) /
